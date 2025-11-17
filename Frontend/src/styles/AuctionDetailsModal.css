@@ -1,0 +1,2150 @@
+/* AuctionDetailsModal.css - Styles for the auction details modal */
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  padding: 20px;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Modal Header */
+.modal-header {
+  padding: 20px 30px;
+  border-bottom: 1px solid #dee2e6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8f9fa;
+  border-radius: 12px 12px 0 0;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #6c757d;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.close-button:hover {
+  background: #e9ecef;
+  color: #495057;
+}
+
+/* Tab Navigation */
+.tab-navigation {
+  display: flex;
+  background: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  padding: 0 30px;
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  padding: 15px 25px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6c757d;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.tab-button:hover {
+  color: #495057;
+  background: rgba(0, 123, 255, 0.1);
+}
+
+.tab-button.active {
+  color: #007bff;
+  border-bottom-color: #007bff;
+  background: rgba(0, 123, 255, 0.1);
+}
+
+/* Modal Body */
+.modal-body {
+  padding: 30px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Details Section */
+.details-section {
+  margin-bottom: 20px;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.detail-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.detail-item label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-item span {
+  color: #2c3e50;
+  font-size: 14px;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.auction-id-display {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #007bff !important;
+  background: #e3f2fd !important;
+  border-color: #bbdefb !important;
+}
+
+.sbu-badge {
+  background: #e1f5fe !important;
+  color: #01579b !important;
+  font-weight: 600;
+  text-align: center;
+}
+
+.special-notices {
+  background: #fff3e0 !important;
+  border-color: #ffcc02 !important;
+  color: #e65100 !important;
+  white-space: pre-wrap;
+  line-height: 1.5;
+  min-height: 60px;
+}
+
+/* Bidders Section */
+.bidders-section {
+  margin-bottom: 20px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.section-header h3 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.bidders-count,
+.participation-count {
+  background: #007bff;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Tables */
+.bidders-table-container,
+.rankings-table-container {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #dee2e6;
+  margin-bottom: 20px;
+}
+
+.bidders-table,
+.rankings-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.bidders-table thead,
+.rankings-table thead {
+  background: #343a40;
+  color: white;
+}
+
+.bidders-table th,
+.rankings-table th {
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bidders-table td,
+.rankings-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #dee2e6;
+  vertical-align: middle;
+}
+
+.bidders-table tbody tr,
+.rankings-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.bidders-table tbody tr:hover,
+.rankings-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.bidders-table tbody tr:last-child td,
+.rankings-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.bidder-name {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.bidder-company {
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Status badges for bidders */
+.status-invited {
+  background: #e3f2fd;
+  color: #0277bd;
+}
+
+.status-participated {
+  background: #e8f5e8;
+  color: #2e7d32;
+}
+
+.status-pending {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.status-unknown {
+  background: #f5f5f5;
+  color: #757575;
+}
+
+.status-winner {
+  background: #fff3e0;
+  color: #f57c00;
+  animation: pulse 2s infinite;
+}
+
+/* Rankings Section */
+.rankings-section {
+  margin-bottom: 20px;
+}
+
+.rankings-container {
+  margin-top: 20px;
+}
+
+/* Winner Highlight */
+.winner-highlight {
+  background: linear-gradient(135deg, #fff3e0 0%, #ffecb3 100%);
+  border: 2px solid #ffc107;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.2);
+}
+
+.winner-highlight h4 {
+  margin: 0 0 15px 0;
+  color: #f57c00;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.winner-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.winner-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.winner-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.winner-company {
+  font-size: 14px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+.winner-bid {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.winning-amount {
+  font-size: 24px;
+  font-weight: 700;
+  color: #28a745;
+  font-family: 'Courier New', monospace;
+}
+
+.regular-amount {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #495057;
+}
+
+.bid-time {
+  font-size: 12px;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Rankings table specific styles */
+.winner-row {
+  background: rgba(255, 193, 7, 0.1) !important;
+  border-left: 4px solid #ffc107;
+}
+
+.rank-cell {
+  text-align: center;
+  min-width: 60px;
+}
+
+.rank-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  min-width: 35px;
+}
+
+.rank-winner {
+  background: #ffc107;
+  color: #212529;
+  font-size: 16px;
+}
+
+.bid-amount {
+  text-align: right;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+}
+
+/* Bidding Statistics */
+.bidding-statistics {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.bidding-statistics h4 {
+  margin: 0 0 15px 0;
+  color: #2c3e50;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 15px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.stat-item label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-item span {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+/* No bidding data state */
+.no-bidding-data {
+  text-align: center;
+  padding: 60px 20px;
+  color: #6c757d;
+}
+
+.no-data-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+.no-bidding-data h4 {
+  margin: 0 0 15px 0;
+  color: #495057;
+  font-size: 18px;
+}
+
+.no-bidding-data p {
+  margin: 0 0 20px 0;
+  line-height: 1.5;
+}
+
+.btn-refresh {
+  background: #17a2b8;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-refresh:hover {
+  background: #138496;
+  transform: translateY(-1px);
+}
+
+/* Modal Footer */
+.modal-footer {
+  padding: 20px 30px;
+  border-top: 1px solid #dee2e6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 0 0 12px 12px;
+}
+
+.footer-info small {
+  color: #6c757d;
+  font-size: 12px;
+}
+
+.footer-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #545b62;
+  transform: translateY(-1px);
+}
+
+/* Loading states */
+.modal-content.loading,
+.modal-content.error {
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-content {
+  text-align: center;
+  color: #dc3545;
+}
+
+.error-content p {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.btn-retry {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-retry:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .modal-backdrop {
+    padding: 10px;
+  }
+  
+  .modal-content {
+    max-height: 95vh;
+  }
+  
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 15px 20px;
+  }
+  
+  .modal-header h2 {
+    font-size: 20px;
+  }
+  
+  .tab-navigation {
+    padding: 0 20px;
+    overflow-x: auto;
+  }
+  
+  .tab-button {
+    padding: 12px 20px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+  
+  .details-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .winner-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .winner-bid {
+    align-items: flex-start;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .footer-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .footer-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .bidders-table-container,
+  .rankings-table-container {
+    overflow-x: auto;
+  }
+  
+  .bidders-table,
+  .rankings-table {
+    min-width: 500px;
+  }
+  
+  .bidders-table th,
+  .rankings-table th,
+  .bidders-table td,
+  .rankings-table td {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  
+  .winning-amount {
+    font-size: 20px;
+  }
+  
+  .winner-name {
+    font-size: 16px;
+  }
+}
+
+/* Add these styles to your existing AuctionDetailsModal.css */
+
+/* Header with approval actions */
+.modal-header .header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.approval-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-approve {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-approve:hover {
+  background-color: #218838;
+}
+
+.btn-reject {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-reject:hover {
+  background-color: #c82333;
+}
+
+/* Approval status banner */
+.approval-banner {
+  padding: 12px 20px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  border-left: 4px solid;
+}
+
+.approval-banner.approved {
+  background-color: #d4edda;
+  border-color: #28a745;
+  color: #155724;
+}
+
+.approval-banner.rejected {
+  background-color: #f8d7da;
+  border-color: #dc3545;
+  color: #721c24;
+}
+
+.approval-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.approval-icon {
+  font-size: 18px;
+}
+
+/* Status badges updates */
+.status-badge.status-approved {
+  background-color: #28a745;
+  color: white;
+}
+
+.status-badge.status-rejected {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* Rejection modal */
+.reject-modal {
+  max-width: 500px;
+  width: 90%;
+}
+
+.rejection-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.rejection-textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Role indicator */
+.role-indicator {
+  font-size: 0.9em;
+  color: #6c757d;
+  font-weight: normal;
+}
+
+/* Approval info in table */
+.approval-info {
+  font-size: 0.85em;
+}
+
+.approved-by {
+  color: #28a745;
+  display: block;
+}
+
+.rejected-by {
+  color: #dc3545;
+  display: block;
+}
+
+.pending-approval {
+  color: #ffc107;
+  font-style: italic;
+}
+
+/* Additional responsive styles */
+@media (max-width: 768px) {
+  .approval-actions {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .btn-approve,
+  .btn-reject {
+    padding: 6px 12px;
+    font-size: 0.9em;
+  }
+  
+  .approval-banner {
+    padding: 10px 15px;
+  }
+}
+
+.modal-footer .footer-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.modal-footer .btn-approve {
+  background-color: #28a745;
+  color: white;
+}
+
+.modal-footer .btn-reject {
+  background-color: #dc3545;
+  color: white;
+}
+
+.modal-footer .btn-approve:hover {
+  background-color: #218838;
+}
+
+.modal-footer .btn-reject:hover {
+  background-color: #c82333;
+}
+
+/* Add these styles to your existing AuctionDetailsModal.css file */
+
+/* Admin Badge */
+.admin-badge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* System Admin Action Banner */
+.admin-action-banner {
+  background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+  border: 2px solid #fdcb6e;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(253, 203, 110, 0.3);
+  animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 4px 12px rgba(253, 203, 110, 0.3); }
+  50% { box-shadow: 0 6px 20px rgba(253, 203, 110, 0.5); }
+}
+
+.banner-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.banner-icon {
+  font-size: 1.5rem;
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-5px); }
+  60% { transform: translateY(-3px); }
+}
+
+.banner-text {
+  color: #2d3436;
+  font-weight: 500;
+}
+
+.banner-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-small {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  border-radius: 6px;
+}
+
+/* Enhanced Button Styles */
+.btn-approve {
+  background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-approve:hover:not(:disabled) {
+  background: linear-gradient(135deg, #00a085 0%, #008f76 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 184, 148, 0.4);
+}
+
+.btn-reject {
+  background: linear-gradient(135deg, #e17055 0%, #d63031 100%);
+  color: white;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-reject:hover:not(:disabled) {
+  background: linear-gradient(135deg, #d63031 0%, #c0392b 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(214, 48, 49, 0.4);
+}
+
+/* Enhanced Approval Banner */
+.approval-banner {
+  padding: 16px;
+  margin: 16px 0;
+  border-radius: 8px;
+  border-left: 5px solid;
+}
+
+.approval-banner.approved {
+  background: linear-gradient(135deg, #d5f5d0 0%, #c8e6c0 100%);
+  border-left-color: #00b894;
+  color: #2d3436;
+}
+
+.approval-banner.rejected {
+  background: linear-gradient(135deg, #ffeaea 0%, #ffdddd 100%);
+  border-left-color: #e17055;
+  color: #2d3436;
+}
+
+.approval-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.approval-icon {
+  font-size: 1.2rem;
+  margin-top: 2px;
+}
+
+.rejection-reason {
+  margin-top: 8px;
+  padding: 8px;
+  background: rgba(214, 48, 49, 0.1);
+  border-radius: 4px;
+  font-style: italic;
+}
+
+/* Enhanced Reject Modal */
+.reject-modal {
+  max-width: 500px;
+  width: 90%;
+}
+
+.rejection-form {
+  margin: 16px 0;
+}
+
+.rejection-form p {
+  margin: 8px 0;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.rejection-form hr {
+  margin: 16px 0;
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #ddd, transparent);
+}
+
+.rejection-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #2d3436;
+}
+
+.required {
+  color: #e17055;
+  font-weight: bold;
+}
+
+.rejection-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  resize: vertical;
+  transition: border-color 0.3s ease;
+}
+
+.rejection-textarea:focus {
+  outline: none;
+  border-color: #0984e3;
+  box-shadow: 0 0 0 3px rgba(9, 132, 227, 0.1);
+}
+
+.rejection-textarea::placeholder {
+  color: #999;
+}
+
+.help-text {
+  display: block;
+  margin-top: 6px;
+  color: #666;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+/* Status Badge Enhancements */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+
+.status-pending {
+  background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+  color: white;
+  animation: pendingPulse 2s infinite;
+}
+
+@keyframes pendingPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.status-approved {
+  background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+  color: white;
+}
+
+.status-rejected {
+  background: linear-gradient(135deg, #e17055 0%, #d63031 100%);
+  color: white;
+}
+
+.status-live {
+  background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);
+  color: white;
+  animation: livePulse 1.5s infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.status-ended {
+  background: linear-gradient(135deg, #636e72 0%, #2d3436 100%);
+  color: white;
+}
+
+/* Modal Enhancements */
+.modal-backdrop {
+  z-index: 1000;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 2px solid #eee;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-content h2 {
+  margin: 0;
+  color: #2d3436;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.close-button:hover {
+  background: #e17055;
+  color: white;
+  transform: rotate(90deg);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-action-banner {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+  
+  .banner-actions {
+    justify-content: center;
+  }
+  
+  .reject-modal {
+    width: 95%;
+    margin: 10px;
+  }
+  
+  .rejection-textarea {
+    min-height: 80px;
+  }
+}
+
+/* Loading and Error States */
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #0984e3;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.error {
+  text-align: center;
+  padding: 40px;
+}
+
+.error-content {
+  color: #e17055;
+}
+
+.btn-retry {
+  background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 16px;
+  transition: all 0.3s ease;
+}
+
+.btn-retry:hover {
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+  transform: translateY(-2px);
+}
+
+
+/* Award and disqualigy scn */
+/* Top Bidders Section */
+.top-bidders-section {
+  margin-bottom: 2rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  border: 1px solid #dee2e6;
+}
+
+.top-bidders-section h4 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.top-bidders-table-container {
+  overflow-x: auto;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.top-bidders-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  font-size: 0.9rem;
+}
+
+.top-bidders-table th,
+.top-bidders-table td {
+  padding: 12px 8px;
+  text-align: left;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.top-bidders-table th {
+  background: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+  border-top: 1px solid #dee2e6;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.top-bidders-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Row Status Styling */
+.bidder-row.awarded-row {
+  background-color: #d4edda !important;
+}
+
+.bidder-row.not-awarded-row {
+  background-color: #f8d7da !important;
+}
+
+.bidder-row.disqualified-row {
+  background-color: #f8d7da !important;
+  opacity: 0.8;
+}
+
+/* Column Specific Styling */
+.bidder-id {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: #007bff;
+}
+
+.bidder-name {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.bidder-company {
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Actions Column */
+.actions-cell {
+  min-width: 180px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.action-buttons .btn {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.btn-award {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-award:hover:not(:disabled) {
+  background-color: #218838;
+  transform: translateY(-1px);
+}
+
+.btn-disqualify {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-disqualify:hover:not(:disabled) {
+  background-color: #c82333;
+  transform: translateY(-1px);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Action Status Display */
+.action-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-text {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.awarded-text {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.not-awarded-text {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.disqualified-text {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Status Badges Enhancement */
+.status-badge.status-awarded {
+  background-color: #28a745;
+  color: white;
+}
+
+.status-badge.status-not-awarded {
+  background-color: #dc3545;
+  color: white;
+}
+
+.status-badge.status-disqualified {
+  background-color: #6c757d;
+  color: white;
+}
+
+/* Disqualify Modal */
+.disqualify-modal {
+  max-width: 500px;
+  width: 90%;
+}
+
+.bidder-info {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.bidder-info p {
+  margin: 0.5rem 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.bidder-info strong {
+  color: #495057;
+}
+
+.disqualify-textarea,
+.rejection-textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+.disqualify-textarea:focus,
+.rejection-textarea:focus {
+  outline: none;
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.help-text {
+  color: #6c757d;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  display: block;
+}
+
+.required {
+  color: #dc3545;
+}
+
+/* Section Actions Enhancement */
+.section-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.section-actions .btn-small {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+}
+
+.btn-refresh {
+  background-color: #17a2b8;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.btn-refresh:hover {
+  background-color: #138496;
+}
+
+/* All Rankings Section */
+.all-rankings-section {
+  border-top: 2px solid #dee2e6;
+  padding-top: 2rem;
+}
+
+.all-rankings-section h4 {
+  color: #6c757d;
+  margin-bottom: 1rem;
+}
+
+/* Enhanced Statistics Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+}
+
+.stat-item label {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0;
+}
+
+.stat-item span {
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .top-bidders-table {
+    font-size: 0.8rem;
+  }
+  
+  .top-bidders-table th,
+  .top-bidders-table td {
+    padding: 8px 4px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .action-buttons .btn {
+    font-size: 0.75rem;
+    padding: 3px 6px;
+  }
+  
+  .section-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Loading States */
+.action-buttons .btn:disabled {
+  position: relative;
+}
+
+.action-buttons .btn:disabled::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Enhanced Modal Backdrop for Multiple Modals */
+.modal-backdrop[style*="z-index: 1001"] {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+/* Success/Error Messages */
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 0.75rem;
+  border: 1px solid #c3e6cb;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 0.75rem;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+/* for bid records modal not showing */
+/* In your CSS file */
+.high-z-index {
+  z-index: 1002 !important;
+}
+
+/*for newly added styles - statues and cancelaization reason and others*/
+/* Additional CSS styles for new auction results features */
+/* Add these to your existing AuctionDetailsModal.css file */
+
+/* Shortlist Banner */
+.shortlist-banner {
+  background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+}
+
+.shortlist-banner .banner-icon {
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+.shortlist-banner .banner-text {
+  color: #fff;
+}
+
+.btn-shortlist {
+  background-color: #17a2b8;
+  color: white;
+  border: 1px solid #17a2b8;
+  transition: all 0.3s ease;
+}
+
+.btn-shortlist:hover {
+  background-color: #138496;
+  border-color: #117a8b;
+  color: white;
+}
+
+.btn-shortlist:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Status Badge Updates */
+.status-shortlisted {
+  background-color: #17a2b8 !important;
+  color: white !important;
+}
+
+.status-not-shortlisted {
+  background-color: #ffc107 !important;
+  color: #212529 !important;
+}
+
+.status-cancelled {
+  background-color: #6c757d !important;
+  color: white !important;
+}
+
+/* Row Highlighting */
+.shortlisted-row {
+  background-color: #d1ecf1 !important;
+  border-left: 4px solid #17a2b8;
+}
+
+.not-shortlisted-row {
+  background-color: #fff3cd !important;
+  border-left: 4px solid #ffc107;
+}
+
+/* Button Styles */
+.btn-not-award {
+  background-color: #6c757d;
+  color: white;
+  border: 1px solid #6c757d;
+  font-size: 0.8rem;
+  padding: 0.25rem 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.btn-not-award:hover {
+  background-color: #5a6268;
+  border-color: #545b62;
+  color: white;
+}
+
+.btn-cancel-auction {
+  background-color: #dc3545;
+  color: white;
+  border: 1px solid #dc3545;
+  transition: all 0.3s ease;
+}
+
+.btn-cancel-auction:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+  color: white;
+}
+
+/* Action Buttons Container */
+
+/* Status Text Styling */
+.status-text.shortlisted-text {
+  color: #17a2b8;
+  font-weight: bold;
+}
+
+.status-text.not-shortlisted-text {
+  color: #856404;
+  font-weight: bold;
+}
+
+.status-text.pending-text {
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Modal Enhancements */
+.cancel-modal .modal-content {
+  border: 2px solid #dc3545;
+}
+
+.cancel-modal .modal-header {
+  background-color: #dc3545;
+  color: white;
+}
+
+.warning-notice {
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 0.375rem;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.warning-notice h4 {
+  color: #856404;
+  margin-bottom: 0.5rem;
+}
+
+.warning-notice ul {
+  margin-bottom: 0;
+}
+
+.warning-notice li {
+  color: #856404;
+  margin-bottom: 0.25rem;
+}
+
+/* Form Styling */
+.cancel-textarea,
+.disqualify-textarea {
+  border: 2px solid #ced4da;
+  border-radius: 0.375rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.cancel-textarea:focus,
+.disqualify-textarea:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Auction History Enhancements */
+.alert-sm {
+  padding: 0.25rem 0.5rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+  border-radius: 0.2rem;
+}
+
+.badge {
+  font-size: 0.75rem;
+  margin: 0.1rem;
+}
+
+/* Summary Cards */
+.card {
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.card-text {
+  margin-bottom: 0;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .action-buttons {
+    flex-direction: column;
+    min-width: auto;
+  }
+  
+  .action-buttons .btn-small {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.3rem;
+  }
+  
+  .shortlist-banner .banner-actions,
+  .admin-action-banner .banner-actions {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  
+  .details-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+/* Loading States */
+.btn:disabled .spinner-border-sm {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+/* Table Enhancements */
+.table th {
+  border-top: none;
+  font-weight: 600;
+  color: #495057;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.025);
+}
+
+/* Notification Styles */
+.alert.alert-info {
+  border-color: #b8daff;
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.alert.alert-success {
+  border-color: #c3e6cb;
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.alert.alert-warning {
+  border-color: #ffeaa7;
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.alert.alert-danger {
+  border-color: #f5c6cb;
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.alert.alert-secondary {
+  border-color: #d1ecf1;
+  background-color: #e2e3e5;
+  color: #383d41;
+}
+
+.alert.alert-light {
+  border-color: #fdfdfe;
+  background-color: #fefefe;
+  color: #818182;
+}
+
+/* Animation for Status Changes */
+.status-badge {
+  transition: all 0.3s ease;
+}
+
+.bidder-row {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Success Animation */
+@keyframes successPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+  }
+}
+
+.awarded-row {
+  animation: successPulse 2s ease-in-out;
+}
+
+/* Utility Classes */
+.text-shortlisted {
+  color: #17a2b8 !important;
+}
+
+.text-not-shortlisted {
+  color: #856404 !important;
+}
+
+.bg-shortlisted {
+  background-color: #17a2b8 !important;
+}
+
+.bg-not-shortlisted {
+  background-color: #ffc107 !important;
+}
+
+.border-shortlisted {
+  border-color: #17a2b8 !important;
+}
+
+.border-not-shortlisted {
+  border-color: #ffc107 !important;
+}
+
+/* ========================================
+   ADD TO AuctionDetailsModal.css
+   ======================================== */
+
+/* Pricing Display Styles */
+.price-display {
+  font-weight: 600;
+  color: #2c5282;
+  font-size: 1.05em;
+  display: inline-flex;
+  align-items: center;
+}
+
+.currency-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #e6f3ff;
+  border-radius: 12px;
+  color: #1e5a9e;
+  font-weight: 500;
+  font-size: 0.95em;
+  border: 1px solid #b3d9ff;
+}
+
+.step-amount-display {
+  font-weight: 500;
+  color: #38a169;
+  font-size: 1em;
+}
+
+/* ========================================
+   ADD TO editAuctionModal.css
+   ======================================== */
+
+/* Three column grid for pricing section */
+.form-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 992px) {
+  .form-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Input with currency prefix */
+.input-with-prefix {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-prefix {
+  position: absolute;
+  left: 12px;
+  color: #4a5568;
+  font-weight: 600;
+  font-size: 1em;
+  pointer-events: none;
+  z-index: 1;
+}
+
+input.with-prefix {
+  padding-left: 32px !important;
+}
+
+/* Form Section Styling */
+.form-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.form-section h3 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.1rem;
+  color: #2d3748;
+  font-weight: 600;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #cbd5e0;
+}
+
+/* Form Group Styling */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #2d3748;
+  font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 0.75rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  background: white;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.form-group input.error,
+.form-group select.error,
+.form-group textarea.error {
+  border-color: #f56565;
+  background: #fff5f5;
+}
+
+.form-group input.error:focus,
+.form-group select.error:focus,
+.form-group textarea.error:focus {
+  box-shadow: 0 0 0 3px rgba(245, 101, 101, 0.1);
+}
+
+/* Error Text */
+.error-text {
+  color: #e53e3e;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Form Hint */
+.form-hint {
+  color: #718096;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* Required Indicator */
+.required {
+  color: #e53e3e;
+  font-weight: bold;
+  margin-left: 2px;
+}
+
+/* Number Input Arrows */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Modal Specific Styles */
+.edit-auction-modal {
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-body {
+  padding: 1.5rem;
+  max-height: calc(90vh - 150px);
+  overflow-y: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-grid-3 {
+    grid-template-columns: 1fr;
+  }
+  
+  .edit-auction-modal {
+    max-width: 95vw;
+  }
+}
+
+/* Scrollbar Styling */
+.modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
