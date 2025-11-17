@@ -123,27 +123,12 @@ export const deleteAuction = async (auctionId) => {
   }
 };
 
-// Add these functions to your existing auctionService.js file
-
 /**
  * Approve an auction (System Admin only)
  */
 export const approveAuction = async (auctionId) => {
   try {
-    const response = await fetch(`/auction/${auctionId}/approve`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getToken()}`
-      }
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-    }
-
-    return await response.json();
+    return await api.post(`/auction/${auctionId}/approve`);
   } catch (error) {
     console.error('Error approving auction:', error);
     throw error;
@@ -155,21 +140,7 @@ export const approveAuction = async (auctionId) => {
  */
 export const rejectAuction = async (auctionId, reason = '') => {
   try {
-    const response = await fetch(`/auction/${auctionId}/reject`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getToken()}`
-      },
-      body: JSON.stringify({ reason })
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-    }
-
-    return await response.json();
+    return await api.post(`/auction/${auctionId}/reject`, { reason });
   } catch (error) {
     console.error('Error rejecting auction:', error);
     throw error;
