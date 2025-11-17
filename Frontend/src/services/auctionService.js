@@ -468,7 +468,7 @@ export const cancelAuction = async (auctionId, reason) => {
 };
 
 
-  
+
 
 
 // Export methods for use in components
