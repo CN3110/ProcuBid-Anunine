@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Alert from '../Common/Alert';
+import auctionHistoryService from '../../services/Auctionhistoryservice';
 
 const AuctionHistory = () => {
   const [history, setHistory] = useState([]);
@@ -7,114 +8,17 @@ const AuctionHistory = () => {
   const [error, setError] = useState(null);
   const [summary, setSummary] = useState(null);
 
-  // Format currency
-  const formatCurrency = (amount, currency = 'LKR') => {
-  if (!amount && amount !== 0) return "Not specified";
-  
-  const symbol = currency === 'USD' ? '$' : 'RS. ';
-  
-  return `${symbol}${new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount)}`;
-};
-
-  // Get result badge class based on auction_results status
-  const getResultBadgeClass = (resultStatus) => {
-    switch (resultStatus?.toLowerCase()) {
-      case 'awarded':
-        return 'bg-success';
-      case 'short-listed':
-        return 'bg-info';
-      case 'not-short-listed':
-        return 'bg-warning';
-      case 'disqualified':
-        return 'bg-danger';
-      case 'not_awarded':
-        return 'bg-secondary';
-      case 'cancel':
-      case 'cancelled':
-        return 'bg-dark';
-      case 'pending':
-        return 'bg-warning';
-      default:
-        return 'bg-secondary';
-    }
-  };
-
-  // Format result status for display
-  const formatResultStatus = (resultStatus) => {
-    const statusMap = {
-      'awarded': 'Awarded 🎉',
-      'short-listed': 'Short-Listed 📋',
-      'not-short-listed': 'Not Short-Listed',
-      'disqualified': 'Disqualified ❌',
-      'not_awarded': 'Not Awarded',
-      'cancel': 'Cancelled 🚫',
-      'cancelled': 'Cancelled 🚫',
-      'pending': 'Pending Review'
-    };
-    return statusMap[resultStatus] || resultStatus;
-  };
-
   // Fetch auction history from backend
-  const fetchAuctionHistory = useCallback(async () => {
+  const fetchHistory = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('Authentication token not found');
-      }
-
-      const response = await fetch(
-        `https://procubid.anunine.com/api/auction/results/bidder/results`,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch auction results');
-      }
-
-      const data = await response.json();
+      const result = await auctionHistoryService.fetchAuctionHistory();
       
-      if (data.success) {
-        // Map the API response to match your table structure
-        const formattedHistory = data.auctionResults.map(item => ({
-          auction_id: item["Auction ID"],
-          title: item["Title"],
-          bid_amount: item["Best Bid Amount"],
-          result: item["Result"],
-          raw_status: item["Raw Status"],
-          date_time: item["Date Time"],
-          disqualification_reason: item["Disqualification Reason"],
-          cancel_reason: item["Cancel Reason"],
-          shortlisted_at: item["Shortlisted At"]
-        }));
-        
-        setHistory(formattedHistory);
-        
-        // Calculate summary from the data
-        const auctionsWon = formattedHistory.filter(item => item.raw_status === 'awarded').length;
-        const auctionsShortlisted = formattedHistory.filter(item => item.raw_status === 'short-listed').length;
-        const totalAuctions = formattedHistory.length;
-        
-        setSummary({
-          total_auctions_participated: totalAuctions,
-          auctions_won: auctionsWon,
-          auctions_shortlisted: auctionsShortlisted,
-          win_rate: totalAuctions > 0 ? Math.round((auctionsWon / totalAuctions) * 100) : 0
-        });
-
-      } else {
-        throw new Error(data.message || 'Failed to fetch auction results');
+      if (result.success) {
+        setHistory(result.history);
+        setSummary(result.summary);
       }
 
     } catch (err) {
@@ -127,12 +31,12 @@ const AuctionHistory = () => {
 
   // Initial load
   useEffect(() => {
-    fetchAuctionHistory();
-  }, [fetchAuctionHistory]);
+    fetchHistory();
+  }, [fetchHistory]);
 
   // Refresh data
   const handleRefresh = () => {
-    fetchAuctionHistory();
+    fetchHistory();
   };
 
   if (loading && history.length === 0) {
@@ -179,7 +83,6 @@ const AuctionHistory = () => {
             </small>
           )}
         </div>
-       
       </div>
 
       {history.length === 0 ? (
@@ -242,7 +145,6 @@ const AuctionHistory = () => {
                   <th>Title</th>
                   <th>Bid Amount</th>
                   <th>Result</th>
-                  
                   <th>Details</th>
                 </tr>
               </thead>
@@ -257,22 +159,17 @@ const AuctionHistory = () => {
                     </td>
                     <td>
                       <strong className="text-primary">
-                        {formatCurrency(item.bid_amount)}
+                        {auctionHistoryService.formatCurrency(item.bid_amount)}
                       </strong>
                     </td>
                     <td>
-                      <span className={`badge ${getResultBadgeClass(item.raw_status)}`}>
-                        {item.raw_status === 'awarded' && <i className="fas fa-trophy me-1"></i>}
-                        {item.raw_status === 'short-listed' && <i className="fas fa-list me-1"></i>}
-                        {item.raw_status === 'not-short-listed' && <i className="fas fa-times-circle me-1"></i>}
-                        {item.raw_status === 'disqualified' && <i className="fas fa-times me-1"></i>}
-                        {item.raw_status === 'not_awarded' && <i className="fas fa-times-circle me-1"></i>}
-                        {(item.raw_status === 'cancel' || item.raw_status === 'cancelled') && <i className="fas fa-ban me-1"></i>}
-                        {item.raw_status === 'pending' && <i className="fas fa-clock me-1"></i>}
+                      <span className={`badge ${auctionHistoryService.getResultBadgeClass(item.raw_status)}`}>
+                        {auctionHistoryService.getResultIcon(item.raw_status) && (
+                          <i className={`${auctionHistoryService.getResultIcon(item.raw_status)} me-1`}></i>
+                        )}
                         {item.result}
                       </span>
                     </td>
-                    
                     <td>
                       <div className="d-flex flex-column gap-1">
                         {/* Shortlist Notice */}
@@ -329,38 +226,6 @@ const AuctionHistory = () => {
               </tbody>
             </table>
           </div>
-
-          {/* Results Summary 
-          <div className="mt-3">
-            <div className="row">
-              <div className="col-md-12">
-                <div className="alert alert-light">
-                  <div className="row text-center">
-                    <div className="col-md-3">
-                      <small className="text-muted">
-                        <strong>Status Legend:</strong>
-                      </small>
-                    </div>
-                    <div className="col-md-2">
-                      <span className="badge bg-info">📋 Short-Listed</span>
-                    </div>
-                    <div className="col-md-2">
-                      <span className="badge bg-success">🎉 Awarded</span>
-                    </div>
-                    <div className="col-md-2">
-                      <span className="badge bg-warning">❌ Not Short-Listed</span>
-                    </div>
-                    <div className="col-md-2">
-                      <span className="badge bg-danger">🚫 Disqualified</span>
-                    </div>
-                    <div className="col-md-1">
-                      <span className="badge bg-dark">🚫 Cancelled</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> */}
 
           <div className="mt-3">
             <div className="row">
