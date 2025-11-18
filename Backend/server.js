@@ -1,8 +1,10 @@
 const express = require('express');
+const https = require('https');
 const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 const { testConnection } = require('./Config/database');
 
@@ -16,31 +18,112 @@ testConnection().then(success => {
 });
 
 const app = express();
-const server = http.createServer(app);
 
 // Determine if in production
 const isProduction = process.env.NODE_ENV === 'production';
 
+// SSL Configuration for HTTPS
+let server;
+const useHttps = process.env.USE_HTTPS === 'true';
+
+if (useHttps) {
+  try {
+    let sslOptions;
+    
+    // Try PFX format first (Windows-friendly)
+    if (process.env.SSL_PFX_PATH && fs.existsSync(process.env.SSL_PFX_PATH)) {
+      sslOptions = {
+        pfx: fs.readFileSync(process.env.SSL_PFX_PATH),
+        passphrase: process.env.SSL_PFX_PASSWORD || 'CHAThuni123456*',
+        // For self-signed certificates
+        requestCert: false,
+        rejectUnauthorized: false
+      };
+      console.log('🔒 Using PFX certificate format');
+      console.log(`   PFX: ${process.env.SSL_PFX_PATH}`);
+    } 
+    // Fall back to PEM format (key + cert)
+    else {
+      const keyPath = process.env.SSL_KEY_PATH || 'C:/SSL/server.key';
+      const certPath = process.env.SSL_CERT_PATH || 'C:/SSL/server.crt';
+      
+      if (!fs.existsSync(keyPath)) {
+        throw new Error(`SSL key file not found at: ${keyPath}`);
+      }
+      if (!fs.existsSync(certPath)) {
+        throw new Error(`SSL certificate file not found at: ${certPath}`);
+      }
+      
+      sslOptions = {
+        key: fs.readFileSync(keyPath),
+        cert: fs.readFileSync(certPath),
+        // For self-signed certificates
+        requestCert: false,
+        rejectUnauthorized: false
+      };
+      console.log('🔒 Using PEM certificate format');
+      console.log(`   Key: ${keyPath}`);
+      console.log(`   Cert: ${certPath}`);
+    }
+    
+    server = https.createServer(sslOptions, app);
+    console.log('✅ HTTPS server created with SSL certificates');
+  } catch (error) {
+    console.error('⚠️  SSL certificate error:', error.message);
+    console.log('\n📝 Troubleshooting steps:');
+    console.log('   1. Check if SSL certificate files exist at the specified paths');
+    console.log('   2. Verify paths in .env are correct');
+    console.log('   3. Ensure files have proper permissions');
+    console.log('   4. For PEM files, they should start with:');
+    console.log('      - server.key: -----BEGIN PRIVATE KEY-----');
+    console.log('      - server.crt: -----BEGIN CERTIFICATE-----');
+    console.log('\n💡 Tip: Set USE_HTTPS=false in .env to run with HTTP for testing');
+    process.exit(1);
+  }
+} else {
+  server = http.createServer(app);
+  console.log('🌐 HTTP server created (HTTPS disabled)');
+}
+
+// Socket.IO configuration with updated CORS
+const allowedOrigins = isProduction 
+  ? [
+      "https://procubid-anunine.netlify.app",
+      "https://procubid.anunine.com",
+      "http://procubid.anunine.com"
+    ]
+  : [
+      "http://localhost:5173",
+      "http://127.0.0.1:5173"
+    ];
+
 const io = socketIo(server, {
   cors: {
-    origin: isProduction 
-      ? ["https://procubid.anunine.com", "http://procubid.anunine.com"]
-      : "http://localhost:5173",
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true
   }
 });
 
-// Middleware
+// CORS Middleware
 app.use(cors({
-  origin: isProduction 
-    ? ["https://procubid.anunine.com", "http://procubid.anunine.com"]
-    : "http://localhost:5173",
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or Postman)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.warn(`🚫 CORS blocked origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
+
 app.use(express.json());
 
-// API Routes - These must come BEFORE static file serving
+// API Routes
 app.use('/api/auth', require('./Routes/auth'));
 app.use('/api/admin', require('./Routes/admin'));
 app.use('/api/auction', require('./Routes/auctionRoutes'));
@@ -52,25 +135,38 @@ app.get('/api/test-route', (req, res) => {
   res.json({ 
     message: "Backend is working!",
     environment: isProduction ? 'production' : 'development',
-    timestamp: new Date().toISOString()
+    protocol: useHttps ? 'HTTPS' : 'HTTP',
+    timestamp: new Date().toISOString(),
+    host: req.get('host')
   });
 });
 
-// Serve static files from React build folder (PRODUCTION ONLY)
-if (isProduction) {
-  const frontendBuildPath = path.join(__dirname, 'frontend', 'build');
-  
-  // Serve static files
-  app.use(express.static(frontendBuildPath));
-  
-  // Handle React routing - return all requests to React app
-  // This MUST be after all API routes
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(frontendBuildPath, 'index.html'));
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'OK',
+    protocol: useHttps ? 'HTTPS' : 'HTTP',
+    timestamp: new Date().toISOString(),
+    environment: isProduction ? 'production' : 'development'
   });
-  
-  console.log(`📦 Serving frontend from: ${frontendBuildPath}`);
-}
+});
+
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({
+    message: 'ProcuBid Backend API',
+    version: '1.0.0',
+    protocol: useHttps ? 'HTTPS' : 'HTTP',
+    endpoints: {
+      health: '/health',
+      test: '/api/test-route',
+      auth: '/api/auth/*',
+      admin: '/api/admin/*',
+      auction: '/api/auction/*',
+      bid: '/api/bid/*'
+    }
+  });
+});
 
 // Real-time handling
 io.on('connection', (socket) => {
@@ -82,7 +178,6 @@ io.on('connection', (socket) => {
   });
   
   socket.on('place-bid', async (data) => {
-    // Handle bid placement and emit to all users in the auction room
     io.to(`auction-${data.auctionId}`).emit('bid-update', data);
   });
   
@@ -95,9 +190,18 @@ const PORT = process.env.PORT || 5000;
 const HOST = '0.0.0.0';
 
 server.listen(PORT, HOST, () => {
-  console.log(`🚀 Server running at http://${HOST}:${PORT}`);
+  const protocol = useHttps ? 'https' : 'http';
+  console.log('\n===========================================');
+  console.log(`🚀 Server running at ${protocol}://${HOST}:${PORT}`);
   console.log(`📍 Environment: ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'}`);
-  console.log(`🌐 CORS enabled for: ${isProduction ? 'procubid.anunine.com' : 'localhost:5173'}`);
+  console.log(`🔒 SSL: ${useHttps ? 'ENABLED ✅' : 'DISABLED ⚠️'}`);
+  console.log(`🌐 CORS enabled for: ${allowedOrigins.join(', ')}`);
+  console.log('===========================================\n');
+  console.log('Available endpoints:');
+  console.log(`  ${protocol}://localhost:${PORT}/health`);
+  console.log(`  ${protocol}://localhost:${PORT}/api/test-route`);
+  console.log(`  ${protocol}://23.101.29.218:${PORT}/health`);
+  console.log('===========================================\n');
 });
 
 // Import required modules for real-time auction management
@@ -108,17 +212,13 @@ const {
   isAuctionLive 
 } = require('./Controllers/auctionController');
 
-// Define getCurrentSLTime locally to avoid circular dependencies
 const getCurrentSLTime = () => {
   return moment().tz('Asia/Colombo');
 };
 
-// Function to update rankings for all live auctions with Sri Lanka timezone
 const updateLiveAuctionRankings = async () => {
   try {
     const nowSL = getCurrentSLTime();
-    
-    // Get all auctions from database
     const { data: auctions, error } = await query(
       'SELECT id, auction_date, start_time, duration_minutes, status FROM auctions'
     );
@@ -128,28 +228,22 @@ const updateLiveAuctionRankings = async () => {
       return;
     }
     
-    // Filter for live auctions using consistent timezone logic
     const liveAuctions = auctions.filter(auction => {
       return isAuctionLive(auction);
     });
     
-    // Update rankings for each live auction
     for (const auction of liveAuctions) {
       await updateAuctionRankings(auction.id);
     }
     
-    // Update auction statuses in database
     await updateAuctionStatuses();
-    
   } catch (error) {
     console.error('Error in updateLiveAuctionRankings:', error);
   }
 };
 
-// Function to update rankings for a specific auction (REAL-TIME SOCKET UPDATES)
 const updateAuctionRankings = async (auctionId) => {
   try {
-    // Get all bids for this auction with bidder information
     const { data: allBids, error } = await query(`
       SELECT b.id, b.bidder_id, b.amount, b.bid_time,
              u.user_id, u.name, u.company
@@ -165,7 +259,6 @@ const updateAuctionRankings = async (auctionId) => {
     }
     
     if (!allBids || allBids.length === 0) {
-      // Emit empty rankings for auction with no bids
       io.to(`auction-${auctionId}`).emit('ranking-update', {
         auctionId,
         rankings: [],
@@ -175,7 +268,6 @@ const updateAuctionRankings = async (auctionId) => {
       return;
     }
     
-    // Group by bidder and get their lowest bid (reverse auction - lowest wins)
     const bidderLowestBids = {};
     allBids.forEach(bid => {
       const bidderId = bid.bidder_id;
@@ -192,18 +284,14 @@ const updateAuctionRankings = async (auctionId) => {
       }
     });
     
-    // Create sorted array of bidders by their lowest bid (rank 1 = lowest amount)
     const sortedBidders = Object.values(bidderLowestBids)
       .sort((a, b) => {
-        // First sort by amount (lowest first)
         if (a.amount !== b.amount) {
           return a.amount - b.amount;
         }
-        // If amounts are equal, sort by bid time (earliest first)
         return new Date(a.bid_time) - new Date(b.bid_time);
       });
     
-    // Prepare rankings data for socket emission
     const rankings = sortedBidders.map((bidder, index) => ({
       rank: index + 1,
       bidder_id: bidder.bidder_id,
@@ -215,7 +303,6 @@ const updateAuctionRankings = async (auctionId) => {
       is_leader: index === 0
     }));
     
-    // Emit comprehensive ranking update to all clients in this auction room
     io.to(`auction-${auctionId}`).emit('ranking-update', {
       auctionId,
       rankings,
@@ -225,7 +312,6 @@ const updateAuctionRankings = async (auctionId) => {
       timestamp: getCurrentSLTime().format('YYYY-MM-DD HH:mm:ss')
     });
     
-    // Also emit individual rank updates to each bidder
     rankings.forEach(ranking => {
       io.to(`auction-${auctionId}`).emit('individual-rank-update', {
         auctionId,
@@ -238,14 +324,12 @@ const updateAuctionRankings = async (auctionId) => {
       });
     });
     
-    console.log(`📊 Updated rankings for auction ${auctionId}: ${sortedBidders.length} bidders, leader: ${rankings[0]?.name || 'None'} with ${rankings[0]?.amount || 'N/A'}`);
-    
+    console.log(`📊 Rankings updated for auction ${auctionId}`);
   } catch (error) {
     console.error(`Error updating rankings for auction ${auctionId}:`, error);
   }
 };
 
-// Function to check and update auction statuses (FIXED - removed 'scheduled' status)
 const checkAndUpdateAuctionStatuses = async () => {
   try {
     const { data: auctions, error } = await query(
@@ -266,11 +350,9 @@ const checkAndUpdateAuctionStatuses = async () => {
       
       let newStatus = auction.status;
       
-      // Only change status for approved auctions based on time
       if (auction.status === 'approved') {
         if (nowSL.isBetween(startDateTime, endDateTime, null, '[]')) {
           newStatus = 'live';
-          // Emit auction started event
           io.emit('auction-status-change', {
             auctionId: auction.id,
             auction_id: auction.auction_id,
@@ -280,7 +362,6 @@ const checkAndUpdateAuctionStatuses = async () => {
           });
         } else if (nowSL.isAfter(endDateTime)) {
           newStatus = 'ended';
-          // Emit auction ended event
           io.emit('auction-status-change', {
             auctionId: auction.id,
             auction_id: auction.auction_id,
@@ -290,10 +371,8 @@ const checkAndUpdateAuctionStatuses = async () => {
           });
         }
       } else if (auction.status === 'live') {
-        // Change live auctions to ended when time is up
         if (nowSL.isAfter(endDateTime)) {
           newStatus = 'ended';
-          // Emit auction ended event
           io.emit('auction-status-change', {
             auctionId: auction.id,
             auction_id: auction.auction_id,
@@ -304,59 +383,41 @@ const checkAndUpdateAuctionStatuses = async () => {
         }
       }
       
-      // Update database if status changed
       if (newStatus !== auction.status) {
         await query(
           'UPDATE auctions SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
           [newStatus, auction.id]
         );
         updatedCount++;
-        console.log(`🔄 Updated auction ${auction.auction_id} status: ${auction.status} → ${newStatus}`);
+        console.log(`🔄 Auction ${auction.auction_id}: ${auction.status} → ${newStatus}`);
       }
     }
     
     if (updatedCount > 0) {
-      console.log(`✅ Updated ${updatedCount} auction statuses at ${nowSL.format('YYYY-MM-DD HH:mm:ss')} SL time`);
+      console.log(`✅ Updated ${updatedCount} auction statuses`);
     }
-    
   } catch (error) {
-    console.error('Error checking and updating auction statuses:', error);
+    console.error('Error checking auction statuses:', error);
   }
 };
 
-// Enhanced auction management scheduler
 const startAuctionScheduler = () => {
   const nowSL = getCurrentSLTime();
-  console.log(`🚀 Starting auction management scheduler at ${nowSL.format('YYYY-MM-DD HH:mm:ss')} SL time`);
+  console.log(`🚀 Scheduler started at ${nowSL.format('YYYY-MM-DD HH:mm:ss')} SL time`);
   
-  // Run status check immediately on startup
   checkAndUpdateAuctionStatuses();
-  
-  // Run ranking update immediately on startup
   updateLiveAuctionRankings();
   
-  // Schedule status updates every 30 seconds (more frequent for better UX)
-  setInterval(() => {
-    checkAndUpdateAuctionStatuses();
-  }, 30000); // 30 seconds
+  setInterval(checkAndUpdateAuctionStatuses, 30000);
+  setInterval(updateLiveAuctionRankings, 5000);
   
-  // Schedule ranking updates every 5 seconds for live auctions
-  setInterval(() => {
-    updateLiveAuctionRankings();
-  }, 5000); // 5 seconds
-  
-  console.log('⏰ Scheduler configured:');
-  console.log('   • Status updates: Every 30 seconds');
-  console.log('   • Ranking updates: Every 5 seconds');
-  console.log('   • Timezone: Asia/Colombo (Sri Lanka Time)');
+  console.log('⏰ Status updates: Every 30s | Ranking updates: Every 5s');
 };
 
-// Start the enhanced scheduler after server setup
 startAuctionScheduler();
 
-// Graceful shutdown handling
 process.on('SIGINT', () => {
-  console.log('\n🛑 Shutting down server gracefully...');
+  console.log('\n🛑 Shutting down gracefully...');
   server.close(() => {
     console.log('✅ Server closed');
     process.exit(0);
@@ -364,17 +425,16 @@ process.on('SIGINT', () => {
 });
 
 process.on('SIGTERM', () => {
-  console.log('\n🛑 Received SIGTERM, shutting down gracefully...');
+  console.log('\n🛑 SIGTERM received, shutting down...');
   server.close(() => {
     console.log('✅ Server closed');
     process.exit(0);
   });
 });
 
-// Export for use in other files
 module.exports = {
   updateLiveAuctionRankings,
   updateAuctionRankings,
   checkAndUpdateAuctionStatuses,
-  io // Export io for use in controllers if needed
+  io
 };
