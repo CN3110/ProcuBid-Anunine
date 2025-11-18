@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { updateAuction, fetchActiveBidders } from '../../services/auctionService';
-import '../../styles/editAuctionModal.css';
+import '../../styles/EditAuctionModal.css';
 
 const EditAuctionModal = ({ auction, onClose, onSave }) => {
   // State for form data - UPDATED with new fields
