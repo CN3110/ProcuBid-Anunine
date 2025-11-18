@@ -3,7 +3,7 @@ import { getAllAuctions, deleteAuction } from '../../services/auctionService';
 import { getCurrentUser, isAdmin, isSystemAdmin, isRegularAdmin } from '../../services/authService';
 import AuctionDetailsModal from './AuctionDetailsModal';
 import EditAuctionModal from './EditAuctionModal';
-import '../../styles/viewAuctions.css';
+import "../../styles/ViewAuctions.css";
 
 // Icon components
 const ViewIcon = () => (
