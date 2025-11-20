@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Alert from '../Common/Alert';
-import auctionHistoryService from '../../services/AuctionHistoryService.js';
+import auctionHistoryService from '../../services/Auctionhistoryservice';
 
 const AuctionHistory = () => {
   const [history, setHistory] = useState([]);

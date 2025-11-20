@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Card from '../Common/Card';
 import Alert from '../Common/Alert';
-import auctionService from '../../services/auctionService';
+import bidderAuctionService from '../../services/bidderAuctionService';
 
 const LiveAuction = () => {
   // State management
@@ -30,7 +30,7 @@ const LiveAuction = () => {
   const fetchAuctionData = useCallback(async () => {
     try {
       setHasError(false);
-      const result = await auctionService.fetchAuctionData();
+      const result = await bidderAuctionService.fetchAuctionData();
       
       if (!result.auction) {
         setAuction(null);
@@ -66,8 +66,9 @@ const LiveAuction = () => {
     if (!auction) return;
 
     try {
-      const timeRemaining = auctionService.calculateTimeRemaining(auction);
-      setCurrentTimeSL(auctionService.getCurrentSLTime());
+      const timeRemaining = bidderAuctionService.calculateTimeRemaining(auction);
+      setCurrentTimeSL(bidderAuctionService.getCurrentSLTime());
+
       setTimeLeft(timeRemaining);
       
       if (timeRemaining === 'Auction Ended') {
@@ -95,7 +96,7 @@ const LiveAuction = () => {
   // Handle place bid
   const handlePlaceBid = async () => {
     // Validate bid
-    const validation = auctionService.validateBidAmount(bidAmount, auction);
+    const validation = bidderAuctionService.validateBidAmount(bidAmount, auction);
     if (!validation.valid) {
       showAlert(validation.message, 'danger');
       return;
@@ -103,7 +104,7 @@ const LiveAuction = () => {
 
     setLoading(true);
     try {
-      const result = await auctionService.placeBid(auction.id, bidAmount);
+      const result = await bidderAuctionService.placeBid(auction.id, bidAmount);
       showAlert('Bid placed successfully!', 'success');
       setBidAmount('');
       
@@ -125,7 +126,7 @@ const LiveAuction = () => {
   // Effects
   useEffect(() => {
     fetchAuctionData();
-    setCurrentTimeSL(auctionService.getCurrentSLTime());
+    setCurrentTimeSL(bidderAuctionService.getCurrentSLTime());
     
     // Refresh auction data every 5 seconds
     const interval = setInterval(() => {
@@ -145,7 +146,7 @@ const LiveAuction = () => {
 
   useEffect(() => {
     const timeTimer = setInterval(() => {
-      setCurrentTimeSL(auctionService.getCurrentSLTime());
+      setCurrentTimeSL(bidderAuctionService.getCurrentSLTime());
     }, 1000);
     
     return () => clearInterval(timeTimer);
@@ -208,8 +209,8 @@ const LiveAuction = () => {
   }
 
   const auctionStatus = auction.calculated_status || 'unknown';
-  const auctionStart = auctionService.parseSLDateTime(auction.start_datetime_sl);
-  const auctionEnd = auctionService.parseSLDateTime(auction.end_datetime_sl);
+  const auctionStart = bidderAuctionService.parseSLDateTime(auction.start_datetime_sl);
+  const auctionEnd = bidderAuctionService.parseSLDateTime(auction.end_datetime_sl);
 
   return (
     <div className="live-auction">
@@ -255,7 +256,7 @@ const LiveAuction = () => {
                 <strong>Your Latest Bid:</strong> 
                 <span className="fw-bold text-success ms-2">
                   {bidderInfo.latestBid ? 
-                    auctionService.formatCurrency(bidderInfo.latestBid) : 
+                    bidderAuctionService.formatCurrency(bidderInfo.latestBid) : 
                     'No bids yet'
                   }
                 </span>
@@ -311,28 +312,28 @@ const LiveAuction = () => {
             <p>
               <strong>Ceiling Price:</strong> {
                 auction.ceiling_price ? 
-                  auctionService.formatCurrency(auction.ceiling_price, auction.currency) : 
+                  bidderAuctionService.formatCurrency(auction.ceiling_price, auction.currency) : 
                   'Not specified'
               }
             </p> 
             <p>
               <strong>Step Amount:</strong> {
                 auction.step_amount ? 
-                  auctionService.formatCurrency(auction.step_amount, auction.currency) : 
+                  bidderAuctionService.formatCurrency(auction.step_amount, auction.currency) : 
                   'Not specified'
               }
             </p>
             <p>
               <strong>Start Date/Time:</strong> {
                 auctionStart ? 
-                  auctionService.formatToSLTime(auctionStart) : 
+                  bidderAuctionService.formatToSLTime(auctionStart) : 
                   'Invalid date'
               }
             </p>
             <p>
               <strong>End Date/Time:</strong> {
                 auctionEnd ? 
-                  auctionService.formatToSLTime(auctionEnd) : 
+                  bidderAuctionService.formatToSLTime(auctionEnd) : 
                   'Invalid date'
               }
             </p>
