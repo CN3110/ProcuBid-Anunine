@@ -90,7 +90,8 @@ const allowedOrigins = isProduction
   ? [
       "https://procubid-anunine.netlify.app",
       "https://procubid.anunine.com",
-      "http://procubid.anunine.com"
+      "http://procubid.anunine.com",
+      "https://unpetrifying-gumptious-case.ngrok-free.dev"
     ]
   : [
       "http://localhost:5173",
